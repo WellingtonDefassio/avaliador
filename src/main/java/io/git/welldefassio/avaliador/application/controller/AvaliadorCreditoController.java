@@ -3,10 +3,7 @@ package io.git.welldefassio.avaliador.application.controller;
 import io.git.welldefassio.avaliador.application.exception.DadosClienteNotFoundException;
 import io.git.welldefassio.avaliador.application.exception.ErroComunicacaoException;
 import io.git.welldefassio.avaliador.application.service.AvaliadorService;
-import io.git.welldefassio.avaliador.domain.model.DadosAvaliacao;
-import io.git.welldefassio.avaliador.domain.model.DadosCliente;
-import io.git.welldefassio.avaliador.domain.model.RetornoAvaliacaoCliente;
-import io.git.welldefassio.avaliador.domain.model.SituacaoCliente;
+import io.git.welldefassio.avaliador.domain.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +33,7 @@ public class AvaliadorCreditoController {
             return ResponseEntity.status(HttpStatus.resolve(e.getStatus())).build();
         }
     }
+
     @PostMapping
     public ResponseEntity<RetornoAvaliacaoCliente> realizarAvaliacao(@RequestBody DadosAvaliacao dados) {
         try {
@@ -45,6 +43,16 @@ public class AvaliadorCreditoController {
             return ResponseEntity.notFound().build();
         } catch (ErroComunicacaoException e) {
             return ResponseEntity.status(HttpStatus.resolve(e.getStatus())).build();
+        }
+
+    }
+    @PostMapping("solicitar-cartao")
+    public ResponseEntity<ProtocoloSolicitacaoCartao> solicitarCartao(@RequestBody DadosEmissaoCartao dados) {
+        try {
+            ProtocoloSolicitacaoCartao protocolo = avaliadorService.solicitarEmissaoCartao(dados);
+            return ResponseEntity.ok(protocolo);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
 
     }
